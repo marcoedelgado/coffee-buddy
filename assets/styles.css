@@ -1,0 +1,209 @@
+/* ---------- Tokens ---------- */
+:root {
+  --bg:        #1e1512;
+  --bg-deep:   #140e0c;
+  --panel:     #2b1f1a;
+  --edge:      #4a372d;
+  --ink:       #f6ece4;
+  --ink-dim:   #bfa999;
+  --crema:     #e9b872;
+  --me:        #7fd1a8;   /* your turn */
+  --them:      #f29e7d;   /* their turn */
+  --danger:    #ff6b6b;
+
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --radius: 14px;
+  --gutter: 16px;
+}
+
+/* ---------- Base ---------- */
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  background:
+    radial-gradient(ellipse at 50% -20%, rgba(233, 184, 114, 0.16) 0, transparent 60%),
+    var(--bg);
+  color: var(--ink);
+  line-height: 1.45;
+  min-height: 100vh;
+  min-height: 100dvh;
+  -webkit-tap-highlight-color: transparent;
+}
+button, input { font: inherit; color: inherit; }
+
+/* ---------- Layout ---------- */
+.cb {
+  max-width: 560px;
+  margin: 0 auto;
+  padding:
+    calc(env(safe-area-inset-top) + 20px)
+    calc(env(safe-area-inset-right) + var(--gutter))
+    calc(env(safe-area-inset-bottom) + 96px)
+    calc(env(safe-area-inset-left) + var(--gutter));
+}
+
+.cb-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.cb-title {
+  margin: 0;
+  font-size: 1.6rem;
+  letter-spacing: -0.01em;
+  color: var(--crema);
+}
+.cb-edit-toggle {
+  background: none;
+  border: 0;
+  padding: 8px 4px;
+  color: var(--crema);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cb-empty {
+  color: var(--ink-dim);
+  text-align: center;
+  padding: 32px 8px;
+  margin: 0;
+}
+
+/* ---------- Cards ---------- */
+.cb-list {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.cb-card {
+  background: var(--panel);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  padding: 14px 14px 14px;
+}
+.cb-card-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.cb-name {
+  margin: 0;
+  font-size: 1.2rem;
+  overflow-wrap: anywhere;
+}
+.cb-turn {
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink-dim);
+}
+.cb-turn.is-me   { color: var(--me); }
+.cb-turn.is-them { color: var(--them); }
+.cb-meta {
+  margin: 2px 0 12px;
+  font-size: 0.85rem;
+  color: var(--ink-dim);
+}
+
+.cb-actions, .cb-edit-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.cb-edit-actions { display: none; margin-top: 10px; }
+.is-editing .cb-edit-actions { display: grid; }
+
+/* ---------- Buttons ---------- */
+.cb-btn {
+  min-height: 48px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--edge);
+  background: var(--bg-deep);
+  font-weight: 600;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+  touch-action: manipulation;
+  transition: transform 80ms ease, background-color 120ms ease;
+}
+.cb-btn:active { transform: scale(0.97); }
+.cb-btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+.cb-btn:focus-visible, .cb-input:focus-visible { outline: 2px solid var(--crema); outline-offset: 2px; }
+
+/* The button for whoever is due to pay is lit up. */
+.cb-btn.is-due[data-payer="me"]   { background: var(--me);   border-color: var(--me);   color: var(--bg-deep); }
+.cb-btn.is-due[data-payer="them"] { background: var(--them); border-color: var(--them); color: var(--bg-deep); }
+
+.cb-btn-quiet  { background: transparent; color: var(--ink-dim); }
+.cb-btn-danger { background: transparent; color: var(--danger); border-color: color-mix(in srgb, var(--danger) 50%, var(--edge)); }
+
+/* ---------- Add form ---------- */
+.cb-add {
+  display: flex;
+  gap: 10px;
+}
+.cb-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--edge);
+  background: var(--panel);
+  font-size: 16px; /* ≥16px stops iOS zooming in on focus */
+}
+.cb-input::placeholder { color: var(--ink-dim); }
+.cb-btn-add {
+  background: var(--crema);
+  border-color: var(--crema);
+  color: var(--bg-deep);
+  padding: 10px 20px;
+}
+.cb-error {
+  min-height: 1.4em;
+  margin: 6px 2px 0;
+  font-size: 0.85rem;
+  color: var(--danger);
+}
+
+/* ---------- Toast ---------- */
+.cb-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom) + 16px);
+  transform: translateX(-50%);
+  width: min(528px, calc(100% - 2 * var(--gutter)));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 10px 10px 16px;
+  border-radius: 12px;
+  background: var(--ink);
+  color: var(--bg-deep);
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.cb-toast[hidden] { display: none; }
+.cb-toast-undo {
+  flex-shrink: 0;
+  min-height: 40px;
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--bg-deep);
+  color: var(--crema);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cb-btn { transition: none; }
+}

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Coffee Buddy</title>
+  <meta name="description" content="Who bought the last coffee? Keeps score so you don't have to.">
+
+  <!-- Home-screen app (iPhone: Safari → Share → Add to Home Screen) -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Coffee">
+  <meta name="theme-color" content="#1e1512">
+  <link rel="apple-touch-icon" href="assets/icon-180.png">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <main class="cb">
+    <header class="cb-head">
+      <h1 class="cb-title"><span aria-hidden="true">☕</span> Coffee Buddy</h1>
+      <button class="cb-edit-toggle" id="edit-toggle" type="button" aria-pressed="false" hidden>Edit</button>
+    </header>
+
+    <p class="cb-empty" id="empty" hidden>
+      Add the people you go for coffee with.<br>
+      Then tap who paid each time — it'll tell you whose turn it is next.
+    </p>
+
+    <ul class="cb-list" id="list"></ul>
+
+    <form class="cb-add" id="add-form" autocomplete="off">
+      <input class="cb-input" id="add-name" name="name" type="text" placeholder="Add a coffee buddy…"
+             maxlength="40" autocapitalize="words" enterkeyhint="done" aria-label="Name">
+      <button class="cb-btn cb-btn-add" type="submit">Add</button>
+    </form>
+    <p class="cb-error" id="add-error" role="alert"></p>
+  </main>
+
+  <div class="cb-toast" id="toast" role="status" aria-live="polite" hidden>
+    <span id="toast-text"></span>
+    <button class="cb-toast-undo" id="toast-undo" type="button">Undo</button>
+  </div>
+
+  <template id="card-tpl">
+    <li class="cb-card">
+      <div class="cb-card-top">
+        <h2 class="cb-name"></h2>
+        <span class="cb-turn"></span>
+      </div>
+      <p class="cb-meta"></p>
+      <div class="cb-actions">
+        <button class="cb-btn" type="button" data-payer="me">I paid</button>
+        <button class="cb-btn" type="button" data-payer="them"></button>
+      </div>
+      <div class="cb-edit-actions">
+        <button class="cb-btn cb-btn-quiet" type="button" data-action="undo">Undo last</button>
+        <button class="cb-btn cb-btn-danger" type="button" data-action="remove">Remove</button>
+      </div>
+    </li>
+  </template>
+
+  <script type="module" src="assets/app.js"></script>
+</body>
+</html>
