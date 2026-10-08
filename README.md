@@ -6,14 +6,15 @@ Who bought the last coffee? Add the people you go for coffee with, tap who paid
 each time, and it tells you whose turn it is next.
 
 Plain HTML/CSS/JS — **no build step, no frameworks, no dependencies**.
+The look comes from the "Whose Round? Coffee Tracker" Claude Design canvas.
 
 ## Using it
 
 - **Add a buddy** with the box at the bottom.
-- Each card shows **whose turn** it is and lights up that person's button.
-  Tap **I paid** or **<Name> paid** after each coffee. Got it wrong? Tap
-  **Undo** on the toast that appears (it stays for 5 seconds).
-- **Edit** (top right) shows **Undo last** and **Remove** on each card.
+- Each card shows **whose round** it is. Tap a card to open it, then tap
+  **Me** or **<Name>** for whoever is buying. Whoever is due is lit up. Got it
+  wrong? Tap **Undo** on the toast that appears (it stays for 5 seconds).
+- An open card also has **Undo last** and **Remove <Name>**.
 - Cards sort by the most recent coffee first.
 
 ### On the iPhone
@@ -36,8 +37,9 @@ icon and not from a Safari tab. Deleting the home-screen icon deletes the data.
 │   ├── ledger.js          ← pure logic: add/remove people, record rounds, whose turn
 │   ├── app.js             ← DOM + localStorage glue
 │   ├── styles.css
-│   └── icon.svg, icon-*.png
-├── scripts/make-icons.py  ← regenerates the PNG icons (needs Pillow)
+│   ├── dragon.png, cup.png ← mascot art from the Claude Design canvas
+│   └── icon-*.png         ← app icons, built from cup.png
+├── scripts/make-icons.py  ← regenerates the app icons from cup.png (needs Pillow)
 └── tests/ledger.test.mjs
 ```
 

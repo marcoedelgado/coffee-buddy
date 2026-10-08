@@ -1,6 +1,7 @@
 // Network-first service worker: always try for the latest files, fall back to
 // the cached copy when offline. Bump CACHE when the list of files changes.
-const CACHE = 'coffee-buddy-v1';
+// Google Fonts are cached the same way, so the app keeps its look offline.
+const CACHE = 'coffee-buddy-v2';
 const SHELL = [
   './',
   'index.html',
@@ -8,9 +9,13 @@ const SHELL = [
   'assets/styles.css',
   'assets/app.js',
   'assets/ledger.js',
-  'assets/icon.svg',
+  'assets/dragon.png',
+  'assets/cup.png',
   'assets/icon-180.png',
+  'assets/icon-192.png',
 ];
+
+const FONT_ORIGINS = ['https://fonts.googleapis.com', 'https://fonts.gstatic.com'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -26,7 +31,9 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   const req = e.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
+  const origin = new URL(req.url).origin;
+  const cacheable = origin === self.location.origin || FONT_ORIGINS.includes(origin);
+  if (req.method !== 'GET' || !cacheable) return;
   e.respondWith(
     fetch(req)
       .then(res => {

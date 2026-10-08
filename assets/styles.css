@@ -1,19 +1,24 @@
+/* Look from the "Whose Round? Coffee Tracker" Claude Design canvas:
+   cream ground, ink outlines, chunky drop shadows, Fredoka + Nunito. */
+
 /* ---------- Tokens ---------- */
 :root {
-  --bg:        #1e1512;
-  --bg-deep:   #140e0c;
-  --panel:     #2b1f1a;
-  --edge:      #4a372d;
-  --ink:       #f6ece4;
-  --ink-dim:   #bfa999;
-  --crema:     #e9b872;
-  --me:        #7fd1a8;   /* your turn */
-  --them:      #f29e7d;   /* their turn */
-  --danger:    #ff6b6b;
+  --cream:      #FFF7E8;
+  --ink:        #141414;
+  --paper:      #FFFFFF;
+  --text-soft:  #5A4A3A;
+  --text-dim:   #6B5B4B;
+  --dash:       #E7D9C4;
+  --green:      #187A40;   /* your round */
+  --tan:        #F0C9A0;   /* their round (pill) */
+  --brown:      #6B3A1E;   /* their round (button) */
+  --lime:       #8DC24A;   /* add button */
+  --danger:     #A8162F;
 
-  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --radius: 14px;
-  --gutter: 16px;
+  --font-display: 'Fredoka', system-ui, sans-serif;
+  --font-body:    'Nunito', system-ui, -apple-system, sans-serif;
+  --edge:   3px solid var(--ink);
+  --lift:   0 4px 0 var(--ink);
 }
 
 /* ---------- Base ---------- */
@@ -21,189 +26,336 @@
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
-  font-family: var(--font);
-  background:
-    radial-gradient(ellipse at 50% -20%, rgba(233, 184, 114, 0.16) 0, transparent 60%),
-    var(--bg);
+  background: var(--cream);
   color: var(--ink);
-  line-height: 1.45;
+  font-family: var(--font-body);
+  font-weight: 700;
   min-height: 100vh;
   min-height: 100dvh;
+  display: flex;            /* main grows, so the add dock sits at the bottom */
+  flex-direction: column;
   -webkit-tap-highlight-color: transparent;
 }
 button, input { font: inherit; color: inherit; }
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform .12s ease, box-shadow .12s ease, background-color .2s ease;
+}
+button:focus-visible, .cb-input:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
+.cb-sr {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
 
 /* ---------- Layout ---------- */
 .cb {
-  max-width: 560px;
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: 520px;
   margin: 0 auto;
   padding:
     calc(env(safe-area-inset-top) + 20px)
-    calc(env(safe-area-inset-right) + var(--gutter))
-    calc(env(safe-area-inset-bottom) + 96px)
-    calc(env(safe-area-inset-left) + var(--gutter));
+    calc(env(safe-area-inset-right) + 18px)
+    24px
+    calc(env(safe-area-inset-left) + 18px);
 }
 
+/* ---------- Header ---------- */
 .cb-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 18px;
+  gap: 8px;
+  padding: 16px 2px 8px 6px;
+}
+.cb-head-text { display: flex; flex-direction: column; gap: 8px; }
+.cb-chip {
+  align-self: flex-start;
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 8px;
 }
 .cb-title {
   margin: 0;
-  font-size: 1.6rem;
-  letter-spacing: -0.01em;
-  color: var(--crema);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 42px;
+  line-height: 0.95;
 }
-.cb-edit-toggle {
-  background: none;
-  border: 0;
-  padding: 8px 4px;
-  color: var(--crema);
-  font-weight: 600;
-  cursor: pointer;
+.cb-mascot {
+  position: relative;
+  width: 150px;
+  height: 142px;
+  flex-shrink: 0;
+}
+.cb-rawr {
+  position: absolute;
+  top: 2px;
+  left: -6px;
+  z-index: 1;
+  background: var(--paper);
+  border: var(--edge);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  padding: 2px 10px;
+  border-radius: 14px;
+  transform: rotate(-8deg);
+}
+.cb-dragon {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 140px;
+  height: auto;
 }
 
-.cb-empty {
-  color: var(--ink-dim);
-  text-align: center;
-  padding: 32px 8px;
+.cb-hint {
   margin: 0;
+  padding: 4px 6px 16px;
+  font-size: 15px;
+  color: var(--text-soft);
 }
 
 /* ---------- Cards ---------- */
 .cb-list {
   list-style: none;
-  margin: 0 0 20px;
-  padding: 0;
-  display: grid;
-  gap: 12px;
+  margin: 0;
+  padding: 4px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 .cb-card {
-  background: var(--panel);
-  border: 1px solid var(--edge);
-  border-radius: var(--radius);
-  padding: 14px 14px 14px;
+  background: var(--paper);
+  border: var(--edge);
+  border-radius: 22px;
+  box-shadow: 0 5px 0 var(--ink);
+  overflow: hidden;
 }
-.cb-card-top {
+.cb-card-head {
+  width: 100%;
+  min-height: 76px;
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: transparent;
+  border: 0;
+  text-align: left;
+}
+.cb-avatar {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border: var(--edge);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+}
+.cb-card-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 .cb-name {
-  margin: 0;
-  font-size: 1.2rem;
-  overflow-wrap: anywhere;
-}
-.cb-turn {
-  flex-shrink: 0;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--ink-dim);
-}
-.cb-turn.is-me   { color: var(--me); }
-.cb-turn.is-them { color: var(--them); }
-.cb-meta {
-  margin: 2px 0 12px;
-  font-size: 0.85rem;
-  color: var(--ink-dim);
-}
-
-.cb-actions, .cb-edit-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-.cb-edit-actions { display: none; margin-top: 10px; }
-.is-editing .cb-edit-actions { display: grid; }
-
-/* ---------- Buttons ---------- */
-.cb-btn {
-  min-height: 48px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--edge);
-  background: var(--bg-deep);
+  font-family: var(--font-display);
   font-weight: 600;
-  cursor: pointer;
+  font-size: 19px;
   overflow-wrap: anywhere;
-  touch-action: manipulation;
-  transition: transform 80ms ease, background-color 120ms ease;
 }
-.cb-btn:active { transform: scale(0.97); }
-.cb-btn:disabled { opacity: 0.4; cursor: default; transform: none; }
-.cb-btn:focus-visible, .cb-input:focus-visible { outline: 2px solid var(--crema); outline-offset: 2px; }
+.cb-last { font-size: 13px; color: var(--text-dim); }
+.cb-pill {
+  padding: 6px 11px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+  background: var(--paper);
+}
+.cb-pill.is-me   { background: var(--green); color: #fff; }
+.cb-pill.is-them { background: var(--tan); }
 
-/* The button for whoever is due to pay is lit up. */
-.cb-btn.is-due[data-payer="me"]   { background: var(--me);   border-color: var(--me);   color: var(--bg-deep); }
-.cb-btn.is-due[data-payer="them"] { background: var(--them); border-color: var(--them); color: var(--bg-deep); }
+/* ---------- Expanded panel ---------- */
+.cb-panel {
+  padding: 2px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 3px dashed var(--dash);
+}
+.cb-panel[hidden] { display: none; }
+.cb-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 10px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+}
+.cb-pay {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.cb-pay-btn {
+  min-height: 66px;
+  padding: 6px 8px;
+  border: var(--edge);
+  border-radius: 18px;
+  box-shadow: var(--lift);
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+}
+.cb-pay-btn.is-due[data-payer="me"]   { background: var(--green); color: #fff; }
+.cb-pay-btn.is-due[data-payer="them"] { background: var(--brown); color: #fff; }
+.cb-pay-who {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+.cb-pay-count { font-size: 12px; }
 
-.cb-btn-quiet  { background: transparent; color: var(--ink-dim); }
-.cb-btn-danger { background: transparent; color: var(--danger); border-color: color-mix(in srgb, var(--danger) 50%, var(--edge)); }
+.cb-panel-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.cb-link {
+  min-height: 44px;
+  padding: 8px 4px;
+  background: transparent;
+  border: 0;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-dim);
+}
+.cb-link:disabled { visibility: hidden; }
+.cb-link-danger { color: var(--danger); margin-left: auto; }
 
-/* ---------- Add form ---------- */
+/* ---------- Pressable chunky things ---------- */
+.cb-pay-btn:active, .cb-btn-add:active, .cb-toast-undo:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+
+/* ---------- Empty state ---------- */
+.cb-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  padding: 32px 24px;
+  color: var(--text-soft);
+  font-size: 15px;
+}
+.cb-empty[hidden] { display: none; }
+
+/* ---------- Add dock (sticks to the bottom) ---------- */
+.cb-dock {
+  position: sticky;
+  bottom: 0;
+  background: var(--cream);
+  border-top: var(--edge);
+  padding:
+    14px
+    calc(env(safe-area-inset-right) + 18px)
+    calc(env(safe-area-inset-bottom) + 18px)
+    calc(env(safe-area-inset-left) + 18px);
+}
 .cb-add {
+  max-width: 484px;
+  margin: 0 auto;
   display: flex;
   gap: 10px;
 }
 .cb-input {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
-  min-height: 48px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid var(--edge);
-  background: var(--panel);
+  height: 54px;
+  padding: 0 16px;
+  border-radius: 16px;
+  border: var(--edge);
+  box-shadow: var(--lift);
+  background: var(--paper);
   font-size: 16px; /* ≥16px stops iOS zooming in on focus */
 }
-.cb-input::placeholder { color: var(--ink-dim); }
+.cb-input::placeholder { color: var(--text-dim); opacity: 0.8; }
+.cb-input:focus { outline: none; border-color: var(--green); box-shadow: 0 4px 0 var(--green); }
 .cb-btn-add {
-  background: var(--crema);
-  border-color: var(--crema);
-  color: var(--bg-deep);
-  padding: 10px 20px;
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+  border-radius: 16px;
+  border: var(--edge);
+  box-shadow: var(--lift);
+  background: var(--lime);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .cb-error {
-  min-height: 1.4em;
-  margin: 6px 2px 0;
-  font-size: 0.85rem;
+  max-width: 484px;
+  margin: 0 auto;
+  font-size: 13px;
   color: var(--danger);
 }
+.cb-error:not(:empty) { margin-bottom: 8px; }
 
-/* ---------- Toast ---------- */
+/* ---------- Toast (floats just above the dock) ---------- */
 .cb-toast {
-  position: fixed;
+  position: absolute;
   left: 50%;
-  bottom: calc(env(safe-area-inset-bottom) + 16px);
+  bottom: calc(100% + 12px);
   transform: translateX(-50%);
-  width: min(528px, calc(100% - 2 * var(--gutter)));
+  width: min(484px, calc(100% - 36px));
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 10px 10px 16px;
-  border-radius: 12px;
+  padding: 8px 8px 8px 16px;
+  border: var(--edge);
+  border-radius: 16px;
+  box-shadow: var(--lift);
   background: var(--ink);
-  color: var(--bg-deep);
-  font-weight: 600;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  color: var(--cream);
+  font-size: 15px;
 }
 .cb-toast[hidden] { display: none; }
 .cb-toast-undo {
   flex-shrink: 0;
   min-height: 40px;
   padding: 6px 14px;
-  border: 0;
-  border-radius: 8px;
-  background: var(--bg-deep);
-  color: var(--crema);
-  font-weight: 700;
-  cursor: pointer;
+  border: 2px solid var(--cream);
+  border-radius: 12px;
+  background: var(--lime);
+  color: var(--ink);
+  font-weight: 800;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cb-btn { transition: none; }
+  button { transition: none; }
 }
